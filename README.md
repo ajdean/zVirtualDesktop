@@ -1,3 +1,5 @@
+**This a copy of the last free and open source version of mzomparelli's zVirtualDesktop. It is not maintained.**
+
 # zVirtualDesktop
 Windows 10 Virtual Desktop Hotkeys and System Tray Icon
 
@@ -40,4 +42,4 @@ __Upcoming Features:__
 
 ![](https://github.com/mzomparelli/zVirtualDesktop/blob/master/Screenshot.png?raw=true)
 
-[![Download](https://github.com/mzomparelli/zVirtualDesktop/blob/master/download.png?raw=true)](https://github.com/mzomparelli/zVirtualDesktop/blob/master/zVirtualDesktop/bin/Release/zVirtualDesktop.zip?raw=true)
+[![Download](https://github.com/jan-glx/zVirtualDesktop/blob/master/download.png?raw=true)](https://github.com/jan-glx/zVirtualDesktop/blob/master/zVirtualDesktop/bin/Release/zVirtualDesktop.exe?raw=true)
