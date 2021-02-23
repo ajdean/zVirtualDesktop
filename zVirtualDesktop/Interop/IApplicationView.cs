@@ -3,10 +3,13 @@ using System.Runtime.InteropServices;
 
 namespace WindowsDesktop.Interop
 {
-	[ComImport]
-	[Guid("9ac0b5c8-1484-4c5b-9533-4134a0f97cea")]
-	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IApplicationView
+    //[ComImport]
+    //[Guid("9ac0b5c8-1484-4c5b-9533-4134a0f97cea")]
+    //[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [ComImport]
+    [InterfaceType(ComInterfaceType.InterfaceIsIInspectable)]
+    [Guid("372E1D3B-38D3-42E4-A15B-8AB2B178F513")]
+    public interface IApplicationView
 	{
 		int SetFocus();
 
@@ -95,7 +98,21 @@ namespace WindowsDesktop.Interop
 		int GetEnterpriseId([MarshalAs(UnmanagedType.LPWStr)] out string enterpriseId);
 
 		int IsMirrored(out bool isMirrored);
-	}
+
+        //1809
+        int Unknown1(out int unknown);
+        int Unknown2(out int unknown);
+        int Unknown3(out int unknown);
+        int Unknown4(out int unknown);
+        int Unknown5(out int unknown);
+        int Unknown6(int unknown);
+        int Unknown7();
+        int Unknown8(out int unknown);
+        int Unknown9(int unknown);
+        int Unknown10(int unknownX, int unknownY);
+        int Unknown11(int unknown);
+        int Unknown12(out Size size1);
+    }
 
 
 	[StructLayout(LayoutKind.Sequential)]

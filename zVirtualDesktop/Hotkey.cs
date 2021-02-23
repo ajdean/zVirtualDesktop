@@ -337,7 +337,7 @@ public class Hotkey : IDisposable
     {
         if (HotkeyActivated != null)
         {
-            HotkeyActivated(this, new System.EventArgs());
+            HotkeyActivated(this, e);
         }
         //MessageBox.Show("Hit");
     }

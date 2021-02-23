@@ -586,6 +586,91 @@ namespace zVirtualDesktop
             keyMoveFollowTo09.HotkeyActivated += DesktopMoveFollow;
             keyMoveFollowTo09.Register(Keys.NumPad9, true, true, false, true);
 
+            //keyGoTo01.HotkeyActivated += DesktopGo;
+            //keyGoTo01.Register(Keys.D1, false, true, false, true);
+
+            //keyGoTo02.HotkeyActivated += DesktopGo;
+            //keyGoTo02.Register(Keys.D2, false, true, false, true);
+
+            //keyGoTo03.HotkeyActivated += DesktopGo;
+            //keyGoTo03.Register(Keys.D3, false, true, false, true);
+
+            //keyGoTo04.HotkeyActivated += DesktopGo;
+            //keyGoTo04.Register(Keys.D4, false, true, false, true);
+
+            //keyGoTo05.HotkeyActivated += DesktopGo;
+            //keyGoTo05.Register(Keys.D5, false, true, false, true);
+
+            //keyGoTo06.HotkeyActivated += DesktopGo;
+            //keyGoTo06.Register(Keys.D6, false, true, false, true);
+
+            //keyGoTo07.HotkeyActivated += DesktopGo;
+            //keyGoTo07.Register(Keys.D7, false, true, false, true);
+
+            //keyGoTo08.HotkeyActivated += DesktopGo;
+            //keyGoTo08.Register(Keys.D8, false, true, false, true);
+
+            //keyGoTo09.HotkeyActivated += DesktopGo;
+            //keyGoTo09.Register(Keys.D9, false, true, false, true);
+
+
+            //keyMoveTo01.HotkeyActivated += DesktopMove;
+            //keyMoveTo01.Register(Keys.D1, true, false, false, true);
+
+            //keyMoveTo02.HotkeyActivated += DesktopMove;
+            //keyMoveTo02.Register(Keys.D2, true, false, false, true);
+
+            //keyMoveTo03.HotkeyActivated += DesktopMove;
+            //keyMoveTo03.Register(Keys.D3, true, false, false, true);
+
+            //keyMoveTo04.HotkeyActivated += DesktopMove;
+            //keyMoveTo04.Register(Keys.D4, true, false, false, true);
+
+            //keyMoveTo05.HotkeyActivated += DesktopMove;
+            //keyMoveTo05.Register(Keys.D5, true, false, false, true);
+
+            //keyMoveTo06.HotkeyActivated += DesktopMove;
+            //keyMoveTo06.Register(Keys.D6, true, false, false, true);
+
+            //keyMoveTo07.HotkeyActivated += DesktopMove;
+            //keyMoveTo07.Register(Keys.D7, true, false, false, true);
+
+            //keyMoveTo08.HotkeyActivated += DesktopMove;
+            //keyMoveTo08.Register(Keys.D8, true, false, false, true);
+
+            //keyMoveTo09.HotkeyActivated += DesktopMove;
+            //keyMoveTo09.Register(Keys.D9, true, false, false, true);
+
+
+            //keyMoveFollowTo01.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo01.Register(Keys.D1, true, true, false, true);
+
+            //keyMoveFollowTo02.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo02.Register(Keys.D2, true, true, false, true);
+
+            //keyMoveFollowTo03.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo03.Register(Keys.D3, true, true, false, true);
+
+            //keyMoveFollowTo04.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo04.Register(Keys.D4, true, true, false, true);
+
+            //keyMoveFollowTo05.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo05.Register(Keys.D5, true, true, false, true);
+
+            //keyMoveFollowTo06.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo06.Register(Keys.D6, true, true, false, true);
+
+            //keyMoveFollowTo07.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo07.Register(Keys.D7, true, true, false, true);
+
+            //keyMoveFollowTo08.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo08.Register(Keys.D8, true, true, false, true);
+
+            //keyMoveFollowTo09.HotkeyActivated += DesktopMoveFollow;
+            //keyMoveFollowTo09.Register(Keys.D9, true, true, false, true);
+
+
+
             keyMoveNext.HotkeyActivated += DesktopMoveNext;
             keyMoveNext.Register(Keys.Right, true, false, false, true);
 
