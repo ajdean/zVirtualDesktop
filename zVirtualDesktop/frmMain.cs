@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsDesktop;
+using WindowsDesktop.Interop;
 
 namespace zVirtualDesktop
 {
@@ -25,43 +26,43 @@ namespace zVirtualDesktop
         public List<Window> windows = new List<Window>();
 
 
-        public Hotkey keyGoTo01 = new Hotkey(1);
-        public Hotkey keyGoTo02 = new Hotkey(2);
-        public Hotkey keyGoTo03 = new Hotkey(3);
-        public Hotkey keyGoTo04 = new Hotkey(4);
-        public Hotkey keyGoTo05 = new Hotkey(5);
-        public Hotkey keyGoTo06 = new Hotkey(6);
-        public Hotkey keyGoTo07 = new Hotkey(7);
-        public Hotkey keyGoTo08 = new Hotkey(8);
-        public Hotkey keyGoTo09 = new Hotkey(9);
+        //public Hotkey keyGoTo01 = new Hotkey(1);
+        //public Hotkey keyGoTo02 = new Hotkey(2);
+        //public Hotkey keyGoTo03 = new Hotkey(3);
+        //public Hotkey keyGoTo04 = new Hotkey(4);
+        //public Hotkey keyGoTo05 = new Hotkey(5);
+        //public Hotkey keyGoTo06 = new Hotkey(6);
+        //public Hotkey keyGoTo07 = new Hotkey(7);
+        //public Hotkey keyGoTo08 = new Hotkey(8);
+        //public Hotkey keyGoTo09 = new Hotkey(9);
 
-        public Hotkey keyMoveTo01 = new Hotkey(1);
-        public Hotkey keyMoveTo02 = new Hotkey(2);
-        public Hotkey keyMoveTo03 = new Hotkey(3);
-        public Hotkey keyMoveTo04 = new Hotkey(4);
-        public Hotkey keyMoveTo05 = new Hotkey(5);
-        public Hotkey keyMoveTo06 = new Hotkey(6);
-        public Hotkey keyMoveTo07 = new Hotkey(7);
-        public Hotkey keyMoveTo08 = new Hotkey(8);
-        public Hotkey keyMoveTo09 = new Hotkey(9);
+        //public Hotkey keyMoveTo01 = new Hotkey(1);
+        //public Hotkey keyMoveTo02 = new Hotkey(2);
+        //public Hotkey keyMoveTo03 = new Hotkey(3);
+        //public Hotkey keyMoveTo04 = new Hotkey(4);
+        //public Hotkey keyMoveTo05 = new Hotkey(5);
+        //public Hotkey keyMoveTo06 = new Hotkey(6);
+        //public Hotkey keyMoveTo07 = new Hotkey(7);
+        //public Hotkey keyMoveTo08 = new Hotkey(8);
+        //public Hotkey keyMoveTo09 = new Hotkey(9);
 
-        public Hotkey keyMoveFollowTo01 = new Hotkey(1);
-        public Hotkey keyMoveFollowTo02 = new Hotkey(2);
-        public Hotkey keyMoveFollowTo03 = new Hotkey(3);
-        public Hotkey keyMoveFollowTo04 = new Hotkey(4);
-        public Hotkey keyMoveFollowTo05 = new Hotkey(5);
-        public Hotkey keyMoveFollowTo06 = new Hotkey(6);
-        public Hotkey keyMoveFollowTo07 = new Hotkey(7);
-        public Hotkey keyMoveFollowTo08 = new Hotkey(8);
-        public Hotkey keyMoveFollowTo09 = new Hotkey(9);
+        //public Hotkey keyMoveFollowTo01 = new Hotkey(1);
+        //public Hotkey keyMoveFollowTo02 = new Hotkey(2);
+        //public Hotkey keyMoveFollowTo03 = new Hotkey(3);
+        //public Hotkey keyMoveFollowTo04 = new Hotkey(4);
+        //public Hotkey keyMoveFollowTo05 = new Hotkey(5);
+        //public Hotkey keyMoveFollowTo06 = new Hotkey(6);
+        //public Hotkey keyMoveFollowTo07 = new Hotkey(7);
+        //public Hotkey keyMoveFollowTo08 = new Hotkey(8);
+        //public Hotkey keyMoveFollowTo09 = new Hotkey(9);
 
-        public Hotkey keyMoveNext = new Hotkey(6);
-        public Hotkey keyMoveNextFollow = new Hotkey(7);
-        public Hotkey keyMovePrevious = new Hotkey(8);
-        public Hotkey keyMovePreviousFollow = new Hotkey(9);
+        //public Hotkey keyMoveNext = new Hotkey(6);
+        //public Hotkey keyMoveNextFollow = new Hotkey(7);
+        //public Hotkey keyMovePrevious = new Hotkey(8);
+        //public Hotkey keyMovePreviousFollow = new Hotkey(9);
 
-        public Hotkey keyPinWindow = new Hotkey(99);
-        public Hotkey keyPinApp = new Hotkey(99);
+        //public Hotkey keyPinWindow = new Hotkey(99);
+        //public Hotkey keyPinApp = new Hotkey(99);
 
         VirtualDesktop[] Desktops = VirtualDesktop.GetDesktops();
 
@@ -78,6 +79,7 @@ namespace zVirtualDesktop
             //Wire up some events
             this.Closing += frmMain_Closing;
             this.Load += frmMain_Load;
+            this.Closed+= (sender, args) => Hooky.Stop();
             mnuExit.Click += mnuExit_Click;
             mnuSettings.Click += mnuSettings_Click;
             lblGithub.LinkClicked += lblGithub_LinkClicked;
@@ -503,192 +505,216 @@ namespace zVirtualDesktop
 
         public void RegisterHotKeys()
         {
-            keyGoTo01.HotkeyActivated += DesktopGo;
-            keyGoTo01.Register(Keys.NumPad1, false, true, false, true);
+            var keys = new List<Keys> { Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9 };
 
-            keyGoTo02.HotkeyActivated += DesktopGo;
-            keyGoTo02.Register(Keys.NumPad2, false, true, false, true);
+            keys.ForEach(k =>
+            {
+                var shortcut = new Hooky.Shortcut(false, true, false, true, k, keys.IndexOf(k) + 1);
+                shortcut.Activated += DesktopGo2;
+                Hooky.Shortcuts.Add(shortcut);
 
-            keyGoTo03.HotkeyActivated += DesktopGo;
-            keyGoTo03.Register(Keys.NumPad3, false, true, false, true);
+                var shortcut2 = new Hooky.Shortcut(false, false, true, true, k, keys.IndexOf(k) + 1);
+                shortcut2.Activated += DesktopMove2;
+                Hooky.Shortcuts.Add(shortcut2);
 
-            keyGoTo04.HotkeyActivated += DesktopGo;
-            keyGoTo04.Register(Keys.NumPad4, false, true, false, true);
+                var shortcut3 = new Hooky.Shortcut(false, true, true, true, k, keys.IndexOf(k) + 1);
+                shortcut3.Activated += DesktopMoveFollow2;
+                Hooky.Shortcuts.Add(shortcut3);
+            });
 
-            keyGoTo05.HotkeyActivated += DesktopGo;
-            keyGoTo05.Register(Keys.NumPad5, false, true, false, true);
+            //var useNumpad = true;
 
-            keyGoTo06.HotkeyActivated += DesktopGo;
-            keyGoTo06.Register(Keys.NumPad6, false, true, false, true);
+            //if (useNumpad)
+            //{
 
-            keyGoTo07.HotkeyActivated += DesktopGo;
-            keyGoTo07.Register(Keys.NumPad7, false, true, false, true);
+            //    keyGoTo01.HotkeyActivated += DesktopGo;
+            //    keyGoTo01.Register(Keys.NumPad1, false, true, false, true);
 
-            keyGoTo08.HotkeyActivated += DesktopGo;
-            keyGoTo08.Register(Keys.NumPad8, false, true, false, true);
+            //    keyGoTo02.HotkeyActivated += DesktopGo;
+            //    keyGoTo02.Register(Keys.NumPad2, false, true, false, true);
 
-            keyGoTo09.HotkeyActivated += DesktopGo;
-            keyGoTo09.Register(Keys.NumPad9, false, true, false, true);
+            //    keyGoTo03.HotkeyActivated += DesktopGo;
+            //    keyGoTo03.Register(Keys.NumPad3, false, true, false, true);
 
+            //    keyGoTo04.HotkeyActivated += DesktopGo;
+            //    keyGoTo04.Register(Keys.NumPad4, false, true, false, true);
 
-            keyMoveTo01.HotkeyActivated += DesktopMove;
-            keyMoveTo01.Register(Keys.NumPad1, true, false, false, true);
+            //    keyGoTo05.HotkeyActivated += DesktopGo;
+            //    keyGoTo05.Register(Keys.NumPad5, false, true, false, true);
 
-            keyMoveTo02.HotkeyActivated += DesktopMove;
-            keyMoveTo02.Register(Keys.NumPad2, true, false, false, true);
+            //    keyGoTo06.HotkeyActivated += DesktopGo;
+            //    keyGoTo06.Register(Keys.NumPad6, false, true, false, true);
 
-            keyMoveTo03.HotkeyActivated += DesktopMove;
-            keyMoveTo03.Register(Keys.NumPad3, true, false, false, true);
+            //    keyGoTo07.HotkeyActivated += DesktopGo;
+            //    keyGoTo07.Register(Keys.NumPad7, false, true, false, true);
 
-            keyMoveTo04.HotkeyActivated += DesktopMove;
-            keyMoveTo04.Register(Keys.NumPad4, true, false, false, true);
+            //    keyGoTo08.HotkeyActivated += DesktopGo;
+            //    keyGoTo08.Register(Keys.NumPad8, false, true, false, true);
 
-            keyMoveTo05.HotkeyActivated += DesktopMove;
-            keyMoveTo05.Register(Keys.NumPad5, true, false, false, true);
+            //    keyGoTo09.HotkeyActivated += DesktopGo;
+            //    keyGoTo09.Register(Keys.NumPad9, false, true, false, true);
 
-            keyMoveTo06.HotkeyActivated += DesktopMove;
-            keyMoveTo06.Register(Keys.NumPad6, true, false, false, true);
 
-            keyMoveTo07.HotkeyActivated += DesktopMove;
-            keyMoveTo07.Register(Keys.NumPad7, true, false, false, true);
+            //    keyMoveTo01.HotkeyActivated += DesktopMove;
+            //    keyMoveTo01.Register(Keys.NumPad1, true, false, false, true);
 
-            keyMoveTo08.HotkeyActivated += DesktopMove;
-            keyMoveTo08.Register(Keys.NumPad8, true, false, false, true);
+            //    keyMoveTo02.HotkeyActivated += DesktopMove;
+            //    keyMoveTo02.Register(Keys.NumPad2, true, false, false, true);
 
-            keyMoveTo09.HotkeyActivated += DesktopMove;
-            keyMoveTo09.Register(Keys.NumPad9, true, false, false, true);
+            //    keyMoveTo03.HotkeyActivated += DesktopMove;
+            //    keyMoveTo03.Register(Keys.NumPad3, true, false, false, true);
 
+            //    keyMoveTo04.HotkeyActivated += DesktopMove;
+            //    keyMoveTo04.Register(Keys.NumPad4, true, false, false, true);
 
-            keyMoveFollowTo01.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo01.Register(Keys.NumPad1, true, true, false, true);
+            //    keyMoveTo05.HotkeyActivated += DesktopMove;
+            //    keyMoveTo05.Register(Keys.NumPad5, true, false, false, true);
 
-            keyMoveFollowTo02.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo02.Register(Keys.NumPad2, true, true, false, true);
+            //    keyMoveTo06.HotkeyActivated += DesktopMove;
+            //    keyMoveTo06.Register(Keys.NumPad6, true, false, false, true);
 
-            keyMoveFollowTo03.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo03.Register(Keys.NumPad3, true, true, false, true);
+            //    keyMoveTo07.HotkeyActivated += DesktopMove;
+            //    keyMoveTo07.Register(Keys.NumPad7, true, false, false, true);
 
-            keyMoveFollowTo04.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo04.Register(Keys.NumPad4, true, true, false, true);
+            //    keyMoveTo08.HotkeyActivated += DesktopMove;
+            //    keyMoveTo08.Register(Keys.NumPad8, true, false, false, true);
 
-            keyMoveFollowTo05.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo05.Register(Keys.NumPad5, true, true, false, true);
+            //    keyMoveTo09.HotkeyActivated += DesktopMove;
+            //    keyMoveTo09.Register(Keys.NumPad9, true, false, false, true);
 
-            keyMoveFollowTo06.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo06.Register(Keys.NumPad6, true, true, false, true);
 
-            keyMoveFollowTo07.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo07.Register(Keys.NumPad7, true, true, false, true);
+            //    keyMoveFollowTo01.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo01.Register(Keys.NumPad1, true, true, false, true);
 
-            keyMoveFollowTo08.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo08.Register(Keys.NumPad8, true, true, false, true);
+            //    keyMoveFollowTo02.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo02.Register(Keys.NumPad2, true, true, false, true);
 
-            keyMoveFollowTo09.HotkeyActivated += DesktopMoveFollow;
-            keyMoveFollowTo09.Register(Keys.NumPad9, true, true, false, true);
+            //    keyMoveFollowTo03.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo03.Register(Keys.NumPad3, true, true, false, true);
 
-            //keyGoTo01.HotkeyActivated += DesktopGo;
-            //keyGoTo01.Register(Keys.D1, false, true, false, true);
+            //    keyMoveFollowTo04.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo04.Register(Keys.NumPad4, true, true, false, true);
 
-            //keyGoTo02.HotkeyActivated += DesktopGo;
-            //keyGoTo02.Register(Keys.D2, false, true, false, true);
+            //    keyMoveFollowTo05.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo05.Register(Keys.NumPad5, true, true, false, true);
 
-            //keyGoTo03.HotkeyActivated += DesktopGo;
-            //keyGoTo03.Register(Keys.D3, false, true, false, true);
+            //    keyMoveFollowTo06.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo06.Register(Keys.NumPad6, true, true, false, true);
 
-            //keyGoTo04.HotkeyActivated += DesktopGo;
-            //keyGoTo04.Register(Keys.D4, false, true, false, true);
+            //    keyMoveFollowTo07.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo07.Register(Keys.NumPad7, true, true, false, true);
 
-            //keyGoTo05.HotkeyActivated += DesktopGo;
-            //keyGoTo05.Register(Keys.D5, false, true, false, true);
+            //    keyMoveFollowTo08.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo08.Register(Keys.NumPad8, true, true, false, true);
 
-            //keyGoTo06.HotkeyActivated += DesktopGo;
-            //keyGoTo06.Register(Keys.D6, false, true, false, true);
+            //    keyMoveFollowTo09.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo09.Register(Keys.NumPad9, true, true, false, true);
+            //}
+            //else
+            //{
+            //    keyGoTo01.HotkeyActivated += DesktopGo;
+            //    keyGoTo01.Register(Keys.D1, false, true, false, true);
 
-            //keyGoTo07.HotkeyActivated += DesktopGo;
-            //keyGoTo07.Register(Keys.D7, false, true, false, true);
+            //    keyGoTo02.HotkeyActivated += DesktopGo;
+            //    keyGoTo02.Register(Keys.D2, false, true, false, true);
 
-            //keyGoTo08.HotkeyActivated += DesktopGo;
-            //keyGoTo08.Register(Keys.D8, false, true, false, true);
+            //    keyGoTo03.HotkeyActivated += DesktopGo;
+            //    keyGoTo03.Register(Keys.D3, false, true, false, true);
 
-            //keyGoTo09.HotkeyActivated += DesktopGo;
-            //keyGoTo09.Register(Keys.D9, false, true, false, true);
+            //    keyGoTo04.HotkeyActivated += DesktopGo;
+            //    keyGoTo04.Register(Keys.D4, false, true, false, true);
 
+            //    keyGoTo05.HotkeyActivated += DesktopGo;
+            //    keyGoTo05.Register(Keys.D5, false, true, false, true);
 
-            //keyMoveTo01.HotkeyActivated += DesktopMove;
-            //keyMoveTo01.Register(Keys.D1, true, false, false, true);
+            //    keyGoTo06.HotkeyActivated += DesktopGo;
+            //    keyGoTo06.Register(Keys.D6, false, true, false, true);
 
-            //keyMoveTo02.HotkeyActivated += DesktopMove;
-            //keyMoveTo02.Register(Keys.D2, true, false, false, true);
+            //    keyGoTo07.HotkeyActivated += DesktopGo;
+            //    keyGoTo07.Register(Keys.D7, false, true, false, true);
 
-            //keyMoveTo03.HotkeyActivated += DesktopMove;
-            //keyMoveTo03.Register(Keys.D3, true, false, false, true);
+            //    keyGoTo08.HotkeyActivated += DesktopGo;
+            //    keyGoTo08.Register(Keys.D8, false, true, false, true);
 
-            //keyMoveTo04.HotkeyActivated += DesktopMove;
-            //keyMoveTo04.Register(Keys.D4, true, false, false, true);
+            //    keyGoTo09.HotkeyActivated += DesktopGo;
+            //    keyGoTo09.Register(Keys.D9, false, true, false, true);
 
-            //keyMoveTo05.HotkeyActivated += DesktopMove;
-            //keyMoveTo05.Register(Keys.D5, true, false, false, true);
 
-            //keyMoveTo06.HotkeyActivated += DesktopMove;
-            //keyMoveTo06.Register(Keys.D6, true, false, false, true);
+            //    keyMoveTo01.HotkeyActivated += DesktopMove;
+            //    keyMoveTo01.Register(Keys.D1, true, false, false, true);
 
-            //keyMoveTo07.HotkeyActivated += DesktopMove;
-            //keyMoveTo07.Register(Keys.D7, true, false, false, true);
+            //    keyMoveTo02.HotkeyActivated += DesktopMove;
+            //    keyMoveTo02.Register(Keys.D2, true, false, false, true);
 
-            //keyMoveTo08.HotkeyActivated += DesktopMove;
-            //keyMoveTo08.Register(Keys.D8, true, false, false, true);
+            //    keyMoveTo03.HotkeyActivated += DesktopMove;
+            //    keyMoveTo03.Register(Keys.D3, true, false, false, true);
 
-            //keyMoveTo09.HotkeyActivated += DesktopMove;
-            //keyMoveTo09.Register(Keys.D9, true, false, false, true);
+            //    keyMoveTo04.HotkeyActivated += DesktopMove;
+            //    keyMoveTo04.Register(Keys.D4, true, false, false, true);
 
+            //    keyMoveTo05.HotkeyActivated += DesktopMove;
+            //    keyMoveTo05.Register(Keys.D5, true, false, false, true);
 
-            //keyMoveFollowTo01.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo01.Register(Keys.D1, true, true, false, true);
+            //    keyMoveTo06.HotkeyActivated += DesktopMove;
+            //    keyMoveTo06.Register(Keys.D6, true, false, false, true);
 
-            //keyMoveFollowTo02.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo02.Register(Keys.D2, true, true, false, true);
+            //    keyMoveTo07.HotkeyActivated += DesktopMove;
+            //    keyMoveTo07.Register(Keys.D7, true, false, false, true);
 
-            //keyMoveFollowTo03.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo03.Register(Keys.D3, true, true, false, true);
+            //    keyMoveTo08.HotkeyActivated += DesktopMove;
+            //    keyMoveTo08.Register(Keys.D8, true, false, false, true);
 
-            //keyMoveFollowTo04.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo04.Register(Keys.D4, true, true, false, true);
+            //    keyMoveTo09.HotkeyActivated += DesktopMove;
+            //    keyMoveTo09.Register(Keys.D9, true, false, false, true);
 
-            //keyMoveFollowTo05.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo05.Register(Keys.D5, true, true, false, true);
 
-            //keyMoveFollowTo06.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo06.Register(Keys.D6, true, true, false, true);
+            //    keyMoveFollowTo01.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo01.Register(Keys.D1, true, true, false, true);
 
-            //keyMoveFollowTo07.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo07.Register(Keys.D7, true, true, false, true);
+            //    keyMoveFollowTo02.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo02.Register(Keys.D2, true, true, false, true);
 
-            //keyMoveFollowTo08.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo08.Register(Keys.D8, true, true, false, true);
+            //    keyMoveFollowTo03.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo03.Register(Keys.D3, true, true, false, true);
 
-            //keyMoveFollowTo09.HotkeyActivated += DesktopMoveFollow;
-            //keyMoveFollowTo09.Register(Keys.D9, true, true, false, true);
+            //    keyMoveFollowTo04.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo04.Register(Keys.D4, true, true, false, true);
 
+            //    keyMoveFollowTo05.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo05.Register(Keys.D5, true, true, false, true);
 
+            //    keyMoveFollowTo06.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo06.Register(Keys.D6, true, true, false, true);
 
-            keyMoveNext.HotkeyActivated += DesktopMoveNext;
-            keyMoveNext.Register(Keys.Right, true, false, false, true);
+            //    keyMoveFollowTo07.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo07.Register(Keys.D7, true, true, false, true);
 
-            keyMoveNextFollow.HotkeyActivated += DesktopMoveNextFollow;
-            keyMoveNextFollow.Register(Keys.Right, true, true, false, true);
+            //    keyMoveFollowTo08.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo08.Register(Keys.D8, true, true, false, true);
 
-            keyMovePrevious.HotkeyActivated += DesktopMovePrevious;
-            keyMovePrevious.Register(Keys.Left, true, false, false, true);
+            //    keyMoveFollowTo09.HotkeyActivated += DesktopMoveFollow;
+            //    keyMoveFollowTo09.Register(Keys.D9, true, true, false, true);
 
-            keyMovePreviousFollow.HotkeyActivated += DesktopMovePreviousFollow;
-            keyMovePreviousFollow.Register(Keys.Left, true, true, false, true);
+            //}
 
+            //keyMoveNext.HotkeyActivated += DesktopMoveNext;
+            //keyMoveNext.Register(Keys.Right, true, false, false, true);
 
-            keyPinWindow.HotkeyActivated += PinWindow;
-            keyPinWindow.Register(Keys.Z, true, false, false, true);
+            //keyMoveNextFollow.HotkeyActivated += DesktopMoveNextFollow;
+            //keyMoveNextFollow.Register(Keys.Right, true, true, false, true);
 
-            keyPinApp.HotkeyActivated += PinApp;
-            keyPinApp.Register(Keys.A, true, false, false, true);
+            //keyMovePrevious.HotkeyActivated += DesktopMovePrevious;
+            //keyMovePrevious.Register(Keys.Left, true, false, false, true);
+
+            //keyMovePreviousFollow.HotkeyActivated += DesktopMovePreviousFollow;
+            //keyMovePreviousFollow.Register(Keys.Left, true, true, false, true);
+
+
+            //keyPinWindow.HotkeyActivated += PinWindow;
+            //keyPinWindow.Register(Keys.Z, true, false, false, true);
+
+            //keyPinApp.HotkeyActivated += PinApp;
+            //keyPinApp.Register(Keys.A, true, false, false, true);
 
         }
 
@@ -742,7 +768,6 @@ namespace zVirtualDesktop
         {
             try
             {
-                Hotkey hotkey = (Hotkey)sender;
                 Window win = Window.ForegroundWindow();
                 IEnumerable<Window> window = from Window w in windows
                                              where w.Handle == win.Handle
@@ -776,7 +801,6 @@ namespace zVirtualDesktop
         {
             try
             {
-                Hotkey hotkey = (Hotkey)sender;
                 Window win = Window.ForegroundWindow();
                 IEnumerable<Window> window = from Window w in windows
                                              where w.Handle == win.Handle
@@ -808,119 +832,158 @@ namespace zVirtualDesktop
 
         }
 
-        private void DesktopGo(object sender, EventArgs e)
+        //private void DesktopGo(object sender, EventArgs e)
+        //{
+        //    Hotkey hotkey = (Hotkey)sender;
+        //    GoToDesktop(hotkey.ID);
+        //}
+
+        private void DesktopGo2(object sender, Hooky.ShortcutEventArgs e)
         {
-            Hotkey hotkey = (Hotkey)sender;
-            GoToDesktop(hotkey.ID);
+            GoToDesktop(e.DesktopId);
         }
 
-        private void DesktopMove(object sender, EventArgs e)
+        //private void DesktopMove(object sender, EventArgs e)
+        //{
+
+        //    Window win = Window.ForegroundWindow();
+        //    IEnumerable<Window> window = from Window w in windows
+        //                                 where w.Handle == win.Handle
+        //                                 select w;
+        //    if (window.Count() < 1)
+        //    { 
+        //        //win = new Window(hWnd);
+        //        windows.Add(win);
+        //    }
+
+        //    Hotkey hotkey = (Hotkey)sender;
+        //    win.MoveToDesktop(hotkey.ID);
+        //    //MoveToDesktop(hotkey.ID);
+        //}
+
+        private void DesktopMove2(object sender, Hooky.ShortcutEventArgs e)
         {
 
             Window win = Window.ForegroundWindow();
             IEnumerable<Window> window = from Window w in windows
-                                         where w.Handle == win.Handle
-                                         select w;
+                where w.Handle == win.Handle
+                select w;
             if (window.Count() < 1)
-            { 
+            {
                 //win = new Window(hWnd);
                 windows.Add(win);
             }
-
-            Hotkey hotkey = (Hotkey)sender;
-            win.MoveToDesktop(hotkey.ID);
+            
+            win.MoveToDesktop(e.DesktopId);
             //MoveToDesktop(hotkey.ID);
         }
 
-        private void DesktopMoveFollow(object sender, EventArgs e)
+        //private void DesktopMoveFollow(object sender, EventArgs e)
+        //{
+
+        //    Window win = Window.ForegroundWindow();
+        //    IEnumerable<Window> window = from Window w in windows
+        //                                 where w.Handle == win.Handle
+        //                                 select w;
+        //    if (window.Count() < 1)
+        //    {
+        //        //win = new Window(hWnd);
+        //        windows.Add(win);
+        //    }
+
+        //    Hotkey hotkey = (Hotkey)sender;
+        //    win.MoveToDesktop(hotkey.ID, true);
+        //    //MoveToDesktop(hotkey.ID);
+        //}
+
+        private void DesktopMoveFollow2(object sender, Hooky.ShortcutEventArgs e)
         {
 
             Window win = Window.ForegroundWindow();
             IEnumerable<Window> window = from Window w in windows
-                                         where w.Handle == win.Handle
-                                         select w;
+                where w.Handle == win.Handle
+                select w;
             if (window.Count() < 1)
             {
                 //win = new Window(hWnd);
                 windows.Add(win);
             }
 
-            Hotkey hotkey = (Hotkey)sender;
-            win.MoveToDesktop(hotkey.ID, true);
+            win.MoveToDesktop(e.DesktopId, true);
             //MoveToDesktop(hotkey.ID);
         }
 
-        private void DesktopMoveNextFollow(object sender, EventArgs e)
-        {
+        //private void DesktopMoveNextFollow(object sender, EventArgs e)
+        //{
 
-            Window win = Window.ForegroundWindow();
-            IEnumerable<Window> window = from Window w in windows
-                                         where w.Handle == win.Handle
-                                         select w;
-            if (window.Count() < 1)
-            {
-                //win = new Window(hWnd);
-                windows.Add(win);
-            }
+        //    Window win = Window.ForegroundWindow();
+        //    IEnumerable<Window> window = from Window w in windows
+        //                                 where w.Handle == win.Handle
+        //                                 select w;
+        //    if (window.Count() < 1)
+        //    {
+        //        //win = new Window(hWnd);
+        //        windows.Add(win);
+        //    }
 
-            Hotkey hotkey = (Hotkey)sender;
-            win.MoveToNextDesktop(true);
-            //MoveToDesktop(hotkey.ID);
-        }
+        //    Hotkey hotkey = (Hotkey)sender;
+        //    win.MoveToNextDesktop(true);
+        //    //MoveToDesktop(hotkey.ID);
+        //}
 
-        private void DesktopMoveNext(object sender, EventArgs e)
-        {
+        //private void DesktopMoveNext(object sender, EventArgs e)
+        //{
 
-            Window win = Window.ForegroundWindow();
-            IEnumerable<Window> window = from Window w in windows
-                                         where w.Handle == win.Handle
-                                         select w;
-            if (window.Count() < 1)
-            {
-                //win = new Window(hWnd);
-                windows.Add(win);
-            }
+        //    Window win = Window.ForegroundWindow();
+        //    IEnumerable<Window> window = from Window w in windows
+        //                                 where w.Handle == win.Handle
+        //                                 select w;
+        //    if (window.Count() < 1)
+        //    {
+        //        //win = new Window(hWnd);
+        //        windows.Add(win);
+        //    }
 
-            Hotkey hotkey = (Hotkey)sender;
-            win.MoveToNextDesktop();
-            //MoveToDesktop(hotkey.ID);
-        }
+        //    Hotkey hotkey = (Hotkey)sender;
+        //    win.MoveToNextDesktop();
+        //    //MoveToDesktop(hotkey.ID);
+        //}
 
-        private void DesktopMovePreviousFollow(object sender, EventArgs e)
-        {
+        //private void DesktopMovePreviousFollow(object sender, EventArgs e)
+        //{
 
-            Window win = Window.ForegroundWindow();
-            IEnumerable<Window> window = from Window w in windows
-                                         where w.Handle == win.Handle
-                                         select w;
-            if (window.Count() < 1)
-            {
-                //win = new Window(hWnd);
-                windows.Add(win);
-            }
+        //    Window win = Window.ForegroundWindow();
+        //    IEnumerable<Window> window = from Window w in windows
+        //                                 where w.Handle == win.Handle
+        //                                 select w;
+        //    if (window.Count() < 1)
+        //    {
+        //        //win = new Window(hWnd);
+        //        windows.Add(win);
+        //    }
 
-            Hotkey hotkey = (Hotkey)sender;
-            win.MoveToPreviousDesktop(true);
-            //MoveToDesktop(hotkey.ID);
-        }
+        //    Hotkey hotkey = (Hotkey)sender;
+        //    win.MoveToPreviousDesktop(true);
+        //    //MoveToDesktop(hotkey.ID);
+        //}
 
-        private void DesktopMovePrevious(object sender, EventArgs e)
-        {
+        //private void DesktopMovePrevious(object sender, EventArgs e)
+        //{
 
-            Window win = Window.ForegroundWindow();
-            IEnumerable<Window> window = from Window w in windows
-                                         where w.Handle == win.Handle
-                                         select w;
-            if (window.Count() < 1)
-            {
-                //win = new Window(hWnd);
-                windows.Add(win);
-            }
+        //    Window win = Window.ForegroundWindow();
+        //    IEnumerable<Window> window = from Window w in windows
+        //                                 where w.Handle == win.Handle
+        //                                 select w;
+        //    if (window.Count() < 1)
+        //    {
+        //        //win = new Window(hWnd);
+        //        windows.Add(win);
+        //    }
 
-            Hotkey hotkey = (Hotkey)sender;
-            win.MoveToPreviousDesktop();
-            //MoveToDesktop(hotkey.ID);
-        }
+        //    Hotkey hotkey = (Hotkey)sender;
+        //    win.MoveToPreviousDesktop();
+        //    //MoveToDesktop(hotkey.ID);
+        //}
 
         private void mnuExit_Click(object sender, EventArgs e)
         {
@@ -1421,6 +1484,8 @@ namespace zVirtualDesktop
             }
         }
 
+        //private Dictionary<int, IntPtr> _lastWindow = new Dictionary<int, IntPtr>();
+
         private void GoToDesktop(int desktopNumber)
         {
             try
@@ -1449,8 +1514,28 @@ namespace zVirtualDesktop
                         }
                     }
 
+                    //if (_lastWindow.ContainsKey(i))
+                    //{
+                    //    _lastWindow[i] = NativeMethods.GetForegroundWindow();
+                    //}
+                    //else
+                    //{
+                    //    _lastWindow.Add(i, NativeMethods.GetForegroundWindow());
+                    //}
+
+                    //NativeMethods.EnumWindows(new CallBackPtr(KillFocus), 0);
+                    //foreach(var window in windows)
+                    //{
+                    //    KillFocus(window.Handle, 0);
+                    //}
+
                     current.Switch();
-                   
+
+                    //if (_lastWindow.ContainsKey(desktopNumber))
+                    //{
+                    //    ForceForegroundWindow(_lastWindow[desktopNumber]);
+                    //}
+
                 }
 
             }
@@ -1460,10 +1545,47 @@ namespace zVirtualDesktop
                     ex.Message + Environment.NewLine + 
                     ex.Source + "::" + ex.TargetSite.Name);
             }
+        }
 
-        
+        private static bool KillFocus(IntPtr hWnd, int lParam)
+        {
+            NativeMethods.SendMessage(hWnd, NativeMethods.WM_KILLFOCUS, IntPtr.Zero, IntPtr.Zero);
 
+            //uint foreThread = NativeMethods.GetWindowThreadProcessId(NativeMethods.GetForegroundWindow(), IntPtr.Zero);
+            //uint appThread = NativeMethods.GetCurrentThreadId();
 
+            //if (foreThread != appThread)
+            //{
+            //    NativeMethods.AttachThreadInput(foreThread, appThread, true);
+            //    NativeMethods.SendMessage(hWnd, NativeMethods.WM_KILLFOCUS, IntPtr.Zero, IntPtr.Zero);
+            //    NativeMethods.AttachThreadInput(foreThread, appThread, false);
+            //}
+            //else
+            //{
+            //    NativeMethods.SendMessage(hWnd, NativeMethods.WM_KILLFOCUS, IntPtr.Zero, IntPtr.Zero);
+            //}
+
+            return true;
+        }
+
+        private static void ForceForegroundWindow(IntPtr hWnd)
+        {
+            uint foreThread = NativeMethods.GetWindowThreadProcessId(NativeMethods.GetForegroundWindow(), IntPtr.Zero);
+            uint appThread = NativeMethods.GetCurrentThreadId();
+            const uint SW_SHOW = 5;
+
+            if (foreThread != appThread)
+            {
+                NativeMethods.AttachThreadInput(foreThread, appThread, true);
+                NativeMethods.BringWindowToTop(hWnd);
+                NativeMethods.ShowWindow(hWnd, SW_SHOW);
+                NativeMethods.AttachThreadInput(foreThread, appThread, false);
+            }
+            else
+            {
+                NativeMethods.BringWindowToTop(hWnd);
+                NativeMethods.ShowWindow(hWnd, SW_SHOW);
+            }
         }
 
         #region "Settings"

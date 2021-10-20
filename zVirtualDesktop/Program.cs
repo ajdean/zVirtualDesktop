@@ -14,6 +14,7 @@ namespace zVirtualDesktop
         [STAThread]
         static void Main()
         {
+            Hooky.Start();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmMain());
