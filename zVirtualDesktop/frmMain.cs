@@ -25,6 +25,8 @@ namespace zVirtualDesktop
         public List<string> PinnedApps = new List<string>();
 
         public List<Window> windows = new List<Window>();
+        
+        public Dictionary<int, Stack<Window>> _windows = new Dictionary<int, Stack<Window>>();
 
 
         //public Hotkey keyGoTo01 = new Hotkey(1);
@@ -510,17 +512,32 @@ namespace zVirtualDesktop
                 new List<Keys> { Keys.NumPad1, Keys.NumPad2, Keys.NumPad3, Keys.NumPad4, Keys.NumPad5, Keys.NumPad6, Keys.NumPad7, Keys.NumPad8, Keys.NumPad9 } :
                 new List<Keys> { Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9 } ;
 
+            // keys.ForEach(k =>
+            // {
+            //     var shortcut = new Hooky.Shortcut(false, true, false, true, k, keys.IndexOf(k) + 1);
+            //     shortcut.Activated += DesktopGo2;
+            //     Hooky.Shortcuts.Add(shortcut);
+            //
+            //     var shortcut2 = new Hooky.Shortcut(false, false, true, true, k, keys.IndexOf(k) + 1);
+            //     shortcut2.Activated += DesktopMove2;
+            //     Hooky.Shortcuts.Add(shortcut2);
+            //
+            //     var shortcut3 = new Hooky.Shortcut(false, true, true, true, k, keys.IndexOf(k) + 1);
+            //     shortcut3.Activated += DesktopMoveFollow2;
+            //     Hooky.Shortcuts.Add(shortcut3);
+            // });
+            
             keys.ForEach(k =>
             {
-                var shortcut = new Hooky.Shortcut(false, true, false, true, k, keys.IndexOf(k) + 1);
+                var shortcut = new Hooky.Shortcut(false, false, true, false, k, keys.IndexOf(k) + 1);
                 shortcut.Activated += DesktopGo2;
                 Hooky.Shortcuts.Add(shortcut);
 
-                var shortcut2 = new Hooky.Shortcut(false, false, true, true, k, keys.IndexOf(k) + 1);
-                shortcut2.Activated += DesktopMove2;
-                Hooky.Shortcuts.Add(shortcut2);
+                // var shortcut2 = new Hooky.Shortcut(false, false, true, false, k, keys.IndexOf(k) + 1);
+                // shortcut2.Activated += DesktopMove2;
+                // Hooky.Shortcuts.Add(shortcut2);
 
-                var shortcut3 = new Hooky.Shortcut(false, true, true, true, k, keys.IndexOf(k) + 1);
+                var shortcut3 = new Hooky.Shortcut(true, false, true, false, k, keys.IndexOf(k) + 1);
                 shortcut3.Activated += DesktopMoveFollow2;
                 Hooky.Shortcuts.Add(shortcut3);
             });
@@ -1487,7 +1504,7 @@ namespace zVirtualDesktop
             }
         }
 
-        //private Dictionary<int, IntPtr> _lastWindow = new Dictionary<int, IntPtr>();
+        private Dictionary<int, IntPtr> _lastWindow = new Dictionary<int, IntPtr>();
 
         private void GoToDesktop(int desktopNumber)
         {
@@ -1499,48 +1516,51 @@ namespace zVirtualDesktop
                 {
                     return;
                 }
+
+                int diff = Math.Abs(i - desktopNumber);
+                if (i < desktopNumber)
+                {
+                    for (int z = 1; z <= diff; z++)
+                    {
+                        current = current.GetRight();
+                    }
+                }
                 else
                 {
-                    int diff = Math.Abs(i - desktopNumber);
-                    if (i < desktopNumber)
+                    for (int z = 1; z <= diff; z++)
                     {
-                        for (int z = 1; z <= diff; z++)
-                        {
-                            current = current.GetRight();
-                        }
+                        current = current.GetLeft();
+                    }
+                }
+                
+                var foregroundWindow = Window.ForegroundWindow();
+
+                if (!(foregroundWindow.IsPinnedApplication || foregroundWindow.IsPinnedWindow))
+                {
+                    if (_lastWindow.ContainsKey(i))
+                    {
+                        _lastWindow[i] = foregroundWindow.Handle;
                     }
                     else
                     {
-                        for (int z = 1; z <= diff; z++)
-                        {
-                            current = current.GetLeft();
-                        }
+                        _lastWindow.Add(i, foregroundWindow.Handle);
                     }
-
-                    //if (_lastWindow.ContainsKey(i))
-                    //{
-                    //    _lastWindow[i] = NativeMethods.GetForegroundWindow();
-                    //}
-                    //else
-                    //{
-                    //    _lastWindow.Add(i, NativeMethods.GetForegroundWindow());
-                    //}
-
-                    //NativeMethods.EnumWindows(new CallBackPtr(KillFocus), 0);
-                    //foreach(var window in windows)
-                    //{
-                    //    KillFocus(window.Handle, 0);
-                    //}
-
-                    current.Switch();
-
-                    //if (_lastWindow.ContainsKey(desktopNumber))
-                    //{
-                    //    ForceForegroundWindow(_lastWindow[desktopNumber]);
-                    //}
-
                 }
 
+                //NativeMethods.EnumWindows(new CallBackPtr(KillFocus), 0);
+                //foreach(var window in windows)
+                //{
+                //    KillFocus(window.Handle, 0);
+                //}
+
+                current.Switch();
+
+                if (_lastWindow.ContainsKey(desktopNumber) && 
+                    !(foregroundWindow.IsPinnedApplication || foregroundWindow.IsPinnedWindow) &&
+                    new Window(_lastWindow[desktopNumber]).DesktopNumber == GetDesktopNumber(current.Id))
+                {
+                    ForceForegroundWindow(_lastWindow[desktopNumber]);
+                }
             }
             catch (Exception ex)
             {
